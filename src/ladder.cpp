@@ -10,8 +10,8 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     if (str1 == str2){
         return false;
     }
-    int m = word1.size() + 1;
-    int n = word2.size() + 1;
+    int m = str1.size() + 1;
+    int n = str2.size() + 1;
     vector<vector<int>> v(m, vector<int>(n));
     // for (int i = 0; i < m; ++i){
     //     for (int j = 0; j < n; ++j){
@@ -27,7 +27,7 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     for (int i = 1; i < m; ++i){
         for (int j = 1; j < n; ++j){
             int c = 0;
-            if (word1[i-1] != word2[j-1]){
+            if (str1[i-1] != str2[j-1]){
                 c = 1;
             }
             v[i][j] = min({v[i-1][j] + 1, v[i][j-1] + 1, v[i-1][j-1] + c});
@@ -39,7 +39,7 @@ bool is_adjacent(const string& word1, const string& word2){
     // if (!edit_distance_within(word1, word2, 1)){
     //     return false;
     // }
-    if (abs(static_cast<ptrdiff_t>(str1.size()) - static_cast<ptrdiff_t>(str2.size())) > d){
+    if (abs(static_cast<ptrdiff_t>(word1.size()) - static_cast<ptrdiff_t>(word2.size())) > 1){
         return false;
     }
     if (word1 == word2){
