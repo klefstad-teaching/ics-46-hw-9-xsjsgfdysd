@@ -7,9 +7,6 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     if (abs(static_cast<ptrdiff_t>(str1.size()) - static_cast<ptrdiff_t>(str2.size())) > d){
         return false;
     }
-    if (str1 == str2){
-        return false;
-    }
     int m = str1.size() + 1;
     int n = str2.size() + 1;
     vector<vector<int>> v(m, vector<int>(n));
@@ -35,41 +32,38 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     }
     return v[m-1][n-1] <= d;
 }
-bool is_adjacent(const string& word1, const string& word2){
-    // if (!edit_distance_within(word1, word2, 1)){
-    //     return false;
-    // }
-    if (abs(static_cast<ptrdiff_t>(word1.size()) - static_cast<ptrdiff_t>(word2.size())) > 1){
-        return false;
-    }
-    if (word1 == word2){
-        return false;
-    }
-    int m = word1.size() + 1;
-    int n = word2.size() + 1;
-    vector<vector<int>> v(m, vector<int>(n));
-    // for (int i = 0; i < m; ++i){
-    //     for (int j = 0; j < n; ++j){
-    //         v[i][j] = 0;
-    //     }
-    // }
-    for (int i = 1; i < m; ++i){
-        v[i][0] = i;
-    }
-    for (int i = 1; i < n; ++i){
-        v[0][i] = i;
-    }
-    for (int i = 1; i < m; ++i){
-        for (int j = 1; j < n; ++j){
-            int c = 0;
-            if (word1[i-1] != word2[j-1]){
-                c = 1;
-            }
-            v[i][j] = min({v[i-1][j] + 1, v[i][j-1] + 1, v[i-1][j-1] + c});
-        }
-    }
-    return v[m-1][n-1] == 1;
-}
+// bool is_adjacent(const string& word1, const string& word2){
+//     // if (!edit_distance_within(word1, word2, 1)){
+//     //     return false;
+//     // }
+//     if (abs(static_cast<ptrdiff_t>(word1.size()) - static_cast<ptrdiff_t>(word2.size())) > 1){
+//         return false;
+//     }
+//     int m = word1.size() + 1;
+//     int n = word2.size() + 1;
+//     vector<vector<int>> v(m, vector<int>(n));
+//     // for (int i = 0; i < m; ++i){
+//     //     for (int j = 0; j < n; ++j){
+//     //         v[i][j] = 0;
+//     //     }
+//     // }
+//     for (int i = 1; i < m; ++i){
+//         v[i][0] = i;
+//     }
+//     for (int i = 1; i < n; ++i){
+//         v[0][i] = i;
+//     }
+//     for (int i = 1; i < m; ++i){
+//         for (int j = 1; j < n; ++j){
+//             int c = 0;
+//             if (word1[i-1] != word2[j-1]){
+//                 c = 1;
+//             }
+//             v[i][j] = min({v[i-1][j] + 1, v[i][j-1] + 1, v[i-1][j-1] + c});
+//         }
+//     }
+//     return v[m-1][n-1] == 1;
+// }
 vector<string> generate_word_ladder(const string& begin_word, const string& end_word, const set<string>& word_list){
     if (begin_word == end_word){//or end_word not in word_list?
         error(begin_word, end_word, "are the same");
@@ -154,43 +148,59 @@ void verify_word_ladder(){
 void my_assert(bool e){
     cout << "e" << ((e) ? " passed" : " failed") << endl;
 }
-// bool is_adjacent(const string& word1, const string& word2){
-//     if (!edit_distance_within(word1, word2, 1)){
-//         return false;
-//     }
-//     int count = 0;
-//     if (word1.size() == word2.size()){
-//         for (int i = 0; i < word1.size(); ++i){
-//             if (word1[i] != word2[i]){
-//                 ++count;
-//             }
-//         }
-//         if (count != 1){
-//             return false;
-//         }
-//         return true;
-//     }
-//     else{
-//         int size = 0;
-//         if (word1.size()>word2.size()){
-//             size = word2.size();
-//         }
-//         else {
-//             size = word1.size();
-//         }
-//         for (int i = 0; i < size; ++i){
-//             if (word1[i] != word2[i]){
-//                 ++count;
-//             }
-//         }
-//         if (count >= 2){
-//             return false;
-//         }
-//         else if (count == 0){
-//             return true;
-//         }
-//         else { //different by 1 before the last letter
-
-//         }
-//     }
-// }
+bool is_adjacent(const string& word1, const string& word2){
+    if (abs(static_cast<ptrdiff_t>(word1.size()) - static_cast<ptrdiff_t>(word2.size())) > 1){
+        return false;
+    }
+    int count = 0;
+    if (word1.size() == word2.size()){
+        for (size_t i = 0; i < word1.size(); ++i){
+            if (word1[i] != word2[i]){
+                ++count;
+            }
+        }
+        if (count > 1){
+            return false;
+        }
+        return true;
+    }
+    else{
+        size_t size1 = word1.size();
+        size_t size2 = word2.size();
+        size_t l;
+        size_t s;
+        if (size1>size2){
+            l = size1;
+            s = size2;
+        }
+        else {
+            l = size2;
+            s = size1;
+        }
+        string wl;
+        string ws;
+        if (word1.size() > word2.size()){
+            wl = word1;
+            ws = word2;
+        }
+        else {
+            wl = word2;
+            ws = word1;
+        }
+        size_t i = 0;
+        size_t j = 0;
+        while ( i < l && j < s){
+            if (wl[i] != ws[j]){
+                ++count;
+                if (count > 1){
+                    return false;
+                }
+                wl.erase(i,1);
+                continue;
+            }
+            ++j;
+            ++i;
+        }
+        return true;
+    }
+}
