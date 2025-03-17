@@ -7,7 +7,7 @@ bool edit_distance_within(const std::string& str1, const std::string& str2, int 
     if (abs(static_cast<ptrdiff_t>(str1.size()) - static_cast<ptrdiff_t>(str2.size())) > d){
         return false;
     }
-    if (word1 == word2){
+    if (str1 == str2){
         return false;
     }
     int m = word1.size() + 1;
