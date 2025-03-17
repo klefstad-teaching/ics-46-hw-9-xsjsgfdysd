@@ -4,13 +4,45 @@ void error(string word1, string word2, string msg){
     cout << word1 << " " << word2 << " " << msg << endl;
 }
 bool edit_distance_within(const std::string& str1, const std::string& str2, int d){
-    if (abs(static_cast<ptrdiff_t>(str1.size()) - static_cast<ptrdiff_t>(str2.size())) <= d){
-        return true;
+    if (abs(static_cast<ptrdiff_t>(str1.size()) - static_cast<ptrdiff_t>(str2.size())) > d){
+        return false;
     }
-    return false;
+    if (word1 == word2){
+        return false;
+    }
+    int m = word1.size() + 1;
+    int n = word2.size() + 1;
+    vector<vector<int>> v(m, vector<int>(n));
+    // for (int i = 0; i < m; ++i){
+    //     for (int j = 0; j < n; ++j){
+    //         v[i][j] = 0;
+    //     }
+    // }
+    for (int i = 1; i < m; ++i){
+        v[i][0] = i;
+    }
+    for (int i = 1; i < n; ++i){
+        v[0][i] = i;
+    }
+    for (int i = 1; i < m; ++i){
+        for (int j = 1; j < n; ++j){
+            int c = 0;
+            if (word1[i-1] != word2[j-1]){
+                c = 1;
+            }
+            v[i][j] = min({v[i-1][j] + 1, v[i][j-1] + 1, v[i-1][j-1] + c});
+        }
+    }
+    return v[m-1][n-1] <= d;
 }
 bool is_adjacent(const string& word1, const string& word2){
-    if (!edit_distance_within(word1, word2, 1)){
+    // if (!edit_distance_within(word1, word2, 1)){
+    //     return false;
+    // }
+    if (abs(static_cast<ptrdiff_t>(str1.size()) - static_cast<ptrdiff_t>(str2.size())) > d){
+        return false;
+    }
+    if (word1 == word2){
         return false;
     }
     int m = word1.size() + 1;
@@ -98,8 +130,13 @@ void load_words(set<string> & word_list, const string& file_name){
     file.close();
 }
 void print_word_ladder(const vector<string>& ladder){
+    if (ladder.size() == 0){
+        cout << "No word ladder found." << endl;
+    }
+    else {
     for (auto e: ladder){
-        cout << e << endl;
+        cout << e << " ";
+    }
     }
 }
 void verify_word_ladder(){
